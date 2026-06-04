@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Homework Planner</title>
+  <title>Ultimate School Planner</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -15,51 +15,78 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-color); padding: 16px; padding-bottom: 80px; }
-    header { text-align: center; margin-bottom: 20px; }
+    header { text-align: center; margin-bottom: 16px; }
     header h1 { font-size: 24px; color: var(--accent-color); margin-bottom: 4px; }
-    header p { font-size: 14px; color: var(--text-muted); }
+    
+    /* 디데이 바 */
+    .dday-bar { background: linear-gradient(135deg, #1e293b, #334155); border: 1px solid var(--border-color); padding: 10px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: bold; color: #f43f5e; margin-bottom: 16px; }
+    
+    /* 퀵링크 버튼 */
+    .quick-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+    .link-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 10px; border-radius: 8px; font-size: 12px; font-weight: bold; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .link-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
     .tabs { display: flex; background: var(--card-bg); border-radius: 12px; padding: 4px; margin-bottom: 20px; border: 1px solid var(--border-color); }
     .tab-btn { flex: 1; background: none; border: none; color: var(--text-muted); padding: 12px; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; }
     .tab-btn.active { background: var(--bg-color); color: var(--accent-color); border: 1px solid var(--border-color); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+    
     .input-group { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px; }
     select, input, button { width: 100%; padding: 12px; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 8px; font-size: 15px; outline: none; }
     select:focus, input:focus { border-color: var(--accent-color); }
+    input[type="date"] { color-scheme: dark; }
     button.add-btn { background: var(--accent-color); color: var(--bg-color); font-weight: bold; border: none; cursor: pointer; }
+    
     .homework-list { display: flex; flex-direction: column; gap: 12px; }
     .homework-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
     .homework-item.completed { opacity: 0.5; }
     .homework-item.completed .hw-text { text-decoration: line-through; color: var(--text-muted); }
     .hw-info { flex: 1; }
-    .hw-meta { font-size: 12px; color: var(--accent-color); font-weight: bold; margin-bottom: 4px; }
+    .hw-meta { font-size: 12px; color: var(--accent-color); font-weight: bold; margin-bottom: 4px; display: flex; justify-content: space-between; }
+    .hw-due { color: #f43f5e; }
     .hw-text { font-size: 16px; word-break: break-all; }
     .hw-actions { display: flex; gap: 8px; }
     .action-btn { padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; border: none; cursor: pointer; }
     .complete-btn { background: #22c55e; color: white; }
     .delete-btn { background: #ef4444; color: white; }
+    
     .schedule-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
     .schedule-table th, .schedule-table td { padding: 12px; text-align: center; border: 1px solid var(--border-color); font-size: 14px; }
     .schedule-table th { background: var(--bg-color); color: var(--accent-color); }
+    
     .calc-screen { background: #000; color: #fff; text-align: right; padding: 24px; font-size: 40px; border-radius: 12px; margin-bottom: 12px; min-height: 90px; word-break: break-all; }
     .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .calc-btn { background: #334155; color: #fff; font-size: 24px; height: 70px; border-radius: 50%; border: none; font-weight: bold; display: flex; justify-content: center; align-items: center; }
     .calc-btn.operator { background: #f97316; }
     .calc-btn.function { background: #cbd5e1; color: #000; }
     .calc-btn.zero { grid-column: span 2; border-radius: 35px; }
+
+    /* 메모장 스타일 */
+    .memo-box { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; }
+    .memo-textarea { width: 100%; height: 150px; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color); padding: 12px; border-radius: 8px; resize: none; font-size: 15px; outline: none; line-height: 1.5; }
+    .memo-textarea:focus { border-color: var(--accent-color); }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>My Planner</h1>
-    <p>Personal Homework & Calculator</p>
+    <h1>My Master Planner</h1>
   </header>
+
+  <div class="dday-bar" id="dday-counter">⏳ Calculating Summer Break D-Day...</div>
+
+  <div class="quick-links">
+    <a href="https://classroom.google.com" target="_blank" class="link-btn">📁 Classroom</a>
+    <a href="https://www.ixl.com" target="_blank" class="link-btn">🟢 IXL Learning</a>
+    <a href="https://google.com" target="_blank" class="link-btn">🔍 Google</a>
+  </div>
 
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('homework')">Homework</button>
     <button class="tab-btn" onclick="switchTab('schedule')">Schedule</button>
     <button class="tab-btn" onclick="switchTab('calculator')">Calc</button>
+    <button class="tab-btn" onclick="switchTab('memo')">Memo</button>
   </div>
 
   <div id="homework" class="tab-content active">
@@ -77,6 +104,7 @@
         <option value="Other">Other</option>
       </select>
       <input type="text" id="homework-input" placeholder="Enter assignment details...">
+      <input type="date" id="due-input">
       <button class="add-btn" onclick="addHomework()">Add Assignment</button>
     </div>
     <div class="homework-list" id="homework-list"></div>
@@ -125,6 +153,13 @@
     </div>
   </div>
 
+  <div id="memo" class="tab-content">
+    <div class="memo-box">
+      <h3 style="margin-bottom: 10px; font-size: 16px; color: var(--accent-color);">Today's Quick Notes</h3>
+      <textarea class="memo-textarea" id="memo-input" placeholder="Type reminders or notes here... (Auto saves!)" oninput="saveMemo()"></textarea>
+    </div>
+  </div>
+
   <script>
     let homeworks = [];
 
@@ -134,6 +169,23 @@
       document.getElementById(tabId).classList.add('active');
       if(event && event.currentTarget) {
         event.currentTarget.classList.add('active');
+      }
+    }
+
+    // 1. D-Day 계산 로직 (여름방학을 임의로 내년 6월 12일로 세팅, 코드에서 변경 가능)
+    function updateDday() {
+      const targetDate = new Date("2027-06-12T00:00:00");
+      const today = new Date();
+      const difference = targetDate - today;
+      const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
+      
+      const counterEl = document.getElementById("dday-counter");
+      if (days > 0) {
+        counterEl.innerText = `☀️ Summer Break: D-${days} left!`;
+      } else if (days === 0) {
+        counterEl.innerText = `🎉 Summer Break Starts TODAY!`;
+      } else {
+        counterEl.innerText = `🏝️ Enjoying Summer Break!`;
       }
     }
 
@@ -147,12 +199,22 @@
         return;
       }
 
+      // 마감일 순서대로 정렬 (마감일이 없는 것은 뒤로 보냄)
+      homeworks.sort((a, b) => {
+        if (!a.due) return 1;
+        if (!b.due) return -1;
+        return new Date(a.due) - new Date(b.due);
+      });
+
       homeworks.forEach((item, index) => {
         const itemEl = document.createElement("div");
         itemEl.className = `homework-item ${item.completed ? 'completed' : ''}`;
+        
+        let dueText = item.due ? `Due: ${item.due}` : "No Due Date";
+        
         itemEl.innerHTML = `
           <div class="hw-info">
-            <div class="hw-meta">[${item.subject}]</div>
+            <div class="hw-meta"><span>[${item.subject}]</span><span class="hw-due">${dueText}</span></div>
             <div class="hw-text">${item.text}</div>
           </div>
           <div class="hw-actions">
@@ -167,12 +229,15 @@
     function addHomework() {
       const subject = document.getElementById("subject-select").value;
       const text = document.getElementById("homework-input").value.trim();
+      const due = document.getElementById("due-input").value;
       
       if (!text) return alert("Please enter details!");
 
-      homeworks.push({ subject, text, completed: false });
+      homeworks.push({ subject, text, due, completed: false });
       saveAndRender();
+      
       document.getElementById("homework-input").value = "";
+      document.getElementById("due-input").value = "";
     }
 
     function toggleComplete(index) {
@@ -190,6 +255,12 @@
     function saveAndRender() {
       localStorage.setItem('my_homeworks', JSON.stringify(homeworks));
       renderHomework();
+    }
+
+    // 메모장 자동 저장 기능
+    function saveMemo() {
+      const memoText = document.getElementById("memo-input").value;
+      localStorage.setItem('my_memo', memoText);
     }
 
     // 계산기 로직
@@ -218,15 +289,18 @@
     }
 
     window.onload = function() {
+      // 숙제 데이터 로드
       const savedData = localStorage.getItem('my_homeworks');
-      if (savedData) {
-        homeworks = JSON.parse(savedData);
-      } else {
-        homeworks = [];
-      }
+      if (savedData) homeworks = JSON.parse(savedData);
       renderHomework();
+
+      // 메모 데이터 로드
+      const savedMemo = localStorage.getItem('my_memo');
+      if (savedMemo) document.getElementById("memo-input").value = savedMemo;
+
+      // 디데이 업데이트
+      updateDday();
     };
   </script>
 </body>
 </html>
-
