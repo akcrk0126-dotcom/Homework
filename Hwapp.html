@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Class Homework Planner</title>
+  <title>My Homework Planner</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -32,8 +32,7 @@
     .homework-item.completed { opacity: 0.5; }
     .homework-item.completed .hw-text { text-decoration: line-through; color: var(--text-muted); }
     .hw-info { flex: 1; }
-    .hw-meta { font-size: 12px; color: var(--accent-color); font-weight: bold; margin-bottom: 4px; display: flex; gap: 8px; }
-    .hw-author { color: var(--text-muted); font-weight: normal; }
+    .hw-meta { font-size: 12px; color: var(--accent-color); font-weight: bold; margin-bottom: 4px; }
     .hw-text { font-size: 16px; word-break: break-all; }
     .hw-actions { display: flex; gap: 8px; }
     .action-btn { padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 6px; border: none; cursor: pointer; }
@@ -53,8 +52,8 @@
 <body>
 
   <header>
-    <h1 id="welcome-title">Class Planner</h1>
-    <p>Realtime Shared Homework Board</p>
+    <h1>My Planner</h1>
+    <p>Personal Homework & Calculator</p>
   </header>
 
   <div class="tabs">
@@ -123,110 +122,89 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  <script>
+    // 전역 변수로 데이터 배열 선언
+    let homeworks = [];
 
-    // 공용 테스트용 Firebase 구성 (친구들과 실시간 결합됨)
-    const firebaseConfig = {
-      databaseURL: "https://homework-planner-default-rtdb.firebaseio.com/"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const hwRef = ref(db, "homeworks");
-
-    // 사용자 이름 입력 받기
-    let username = localStorage.getItem("hw_username");
-    if (!username) {
-      username = prompt("반 친구들이 알아볼 수 있게 이름을 입력해 주세요:") || "Anonymous";
-      localStorage.setItem("hw_username", username);
-    }
-    document.getElementById("welcome-title").innerText = `Hello, ${username}!`;
-
-    // 탭 전환 함수
-    window.switchTab = function(tabId) {
+    function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-      event.currentTarget.classList.add('active');
-    };
+      if(event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+      }
+    }
 
-    // 실시간 데이터 가져오기 및 렌더링
-    onValue(hwRef, (snapshot) => {
+    function renderHomework() {
       const listEl = document.getElementById("homework-list");
+      if (!listEl) return;
       listEl.innerHTML = "";
-      const data = snapshot.val();
       
-      if (!data) {
+      if (homeworks.length === 0) {
         listEl.innerHTML = "<p style='text-align:center; color:gray; padding:20px;'>No assignments active!</p>";
         return;
       }
 
-      Object.keys(data).forEach(id => {
-        const item = data[id];
+      homeworks.forEach((item, index) => {
         const itemEl = document.createElement("div");
         itemEl.className = `homework-item ${item.completed ? 'completed' : ''}`;
         itemEl.innerHTML = `
           <div class="hw-info">
-            <div class="hw-meta"><span>[${item.subject}]</span><span class="hw-author">By ${item.author}</span></div>
+            <div class="hw-meta">[${item.subject}]</div>
             <div class="hw-text">${item.text}</div>
           </div>
           <div class="hw-actions">
-            <button class="action-btn complete-btn" onclick="toggleComplete('${id}', ${item.completed})">${item.completed ? 'Undo' : 'Done'}</button>
-            <button class="action-btn delete-btn" onclick="deleteHomework('${id}')">Del</button>
+            <button class="action-btn complete-btn" onclick="toggleComplete(${index})">${item.completed ? 'Undo' : 'Done'}</button>
+            <button class="action-btn delete-btn" onclick="deleteHomework(${index})">Del</button>
           </div>
         `;
         listEl.appendChild(itemEl);
       });
-    });
+    }
 
-    // 숙제 추가 함수
-    window.addHomework = function() {
+    function addHomework() {
       const subject = document.getElementById("subject-select").value;
       const text = document.getElementById("homework-input").value.trim();
       
       if (!text) return alert("Please enter details!");
 
-      push(hwRef, {
-        subject: subject,
-        text: text,
-        author: username,
-        completed: false
-      });
-
+      homeworks.push({ subject, text, completed: false });
+      saveAndRender();
       document.getElementById("homework-input").value = "";
-    };
+    }
 
-    // 완료 상태 토글
-    window.toggleComplete = function(id, currentStatus) {
-      const itemRef = ref(db, `homeworks/${id}`);
-      update(itemRef, { completed: !currentStatus });
-    };
+    function toggleComplete(index) {
+      homeworks[index].completed = !homeworks[index].completed;
+      saveAndRender();
+    }
 
-    // 숙제 삭제
-    window.deleteHomework = function(id) {
+    function deleteHomework(index) {
       if (confirm("Delete this assignment?")) {
-        const itemRef = ref(db, `homeworks/${id}`);
-        remove(itemRef);
+        homeworks.splice(index, 1);
+        saveAndRender();
       }
-    };
+    }
+
+    function saveAndRender() {
+      localStorage.setItem('my_homeworks', JSON.stringify(homeworks));
+      renderHomework();
+    }
 
     // 계산기 로직
     let calcInput = "";
-    window.inputCalc = function(val) {
+    function inputCalc(val) {
       if (document.getElementById("calc-display").innerText === "0" && !isNaN(val)) {
         calcInput = val;
       } else {
         calcInput += val;
       }
       document.getElementById("calc-display").innerText = calcInput;
-    };
-    window.clearCalc = function() {
+    }
+    function clearCalc() {
       calcInput = "0";
       document.getElementById("calc-display").innerText = calcInput;
-    };
-    window.calculate = function() {
+    }
+    function calculate() {
       try {
         let result = eval(calcInput.replace('×', '*').replace('÷', '/'));
         calcInput = String(result);
@@ -235,6 +213,17 @@
         document.getElementById("calc-display").innerText = "Error";
         calcInput = "";
       }
+    }
+
+    // 페이지 로드가 완전히 끝난 후 데이터를 불러오고 화면을 그립니다.
+    window.onload = function() {
+      const savedData = localStorage.getItem('my_homeworks');
+      if (savedData) {
+        homeworks = JSON.parse(savedData);
+      } else {
+        homeworks = [];
+      }
+      renderHomework();
     };
   </script>
 </body>
