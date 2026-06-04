@@ -78,7 +78,7 @@
 
   <div class="quick-links">
     <a href="https://classroom.google.com" target="_blank" class="link-btn">📁 Classroom</a>
-    <a href="https://www.ixl.com" target="_blank" class="link-btn">🟢 IXL Learning</a>
+    <a href="https://sie.getalma.com" target="_blank" class="link-btn">🏫 SIE Alma</a>
     <a href="https://google.com" target="_blank" class="link-btn">🔍 Google</a>
   </div>
 
@@ -172,9 +172,9 @@
       }
     }
 
-    // 1. D-Day 계산 로직 (여름방학을 임의로 내년 6월 12일로 세팅, 코드에서 변경 가능)
+    // 여름방학 디데이 (2026년 6월 19일 설정)
     function updateDday() {
-      const targetDate = new Date("2027-06-12T00:00:00");
+      const targetDate = new Date("2026-06-19T00:00:00");
       const today = new Date();
       const difference = targetDate - today;
       const days = Math.ceil(difference / (1000 * 60 * 60 * 24));
@@ -199,7 +199,6 @@
         return;
       }
 
-      // 마감일 순서대로 정렬 (마감일이 없는 것은 뒤로 보냄)
       homeworks.sort((a, b) => {
         if (!a.due) return 1;
         if (!b.due) return -1;
@@ -257,13 +256,11 @@
       renderHomework();
     }
 
-    // 메모장 자동 저장 기능
     function saveMemo() {
       const memoText = document.getElementById("memo-input").value;
       localStorage.setItem('my_memo', memoText);
     }
 
-    // 계산기 로직
     let calcInput = "";
     function inputCalc(val) {
       if (document.getElementById("calc-display").innerText === "0" && !isNaN(val)) {
@@ -289,16 +286,13 @@
     }
 
     window.onload = function() {
-      // 숙제 데이터 로드
       const savedData = localStorage.getItem('my_homeworks');
       if (savedData) homeworks = JSON.parse(savedData);
       renderHomework();
 
-      // 메모 데이터 로드
       const savedMemo = localStorage.getItem('my_memo');
       if (savedMemo) document.getElementById("memo-input").value = savedMemo;
 
-      // 디데이 업데이트
       updateDday();
     };
   </script>
