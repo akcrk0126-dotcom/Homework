@@ -39,7 +39,7 @@
     .complete-btn { background: #22c55e; color: white; }
     .delete-btn { background: #ef4444; color: white; }
     .schedule-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
-    .schedule-table th, .schedule-table td { padding: 12px; text-align: center; border: 1px solid var(--border-color); }
+    .schedule-table th, .schedule-table td { padding: 12px; text-align: center; border: 1px solid var(--border-color); font-size: 14px; }
     .schedule-table th { background: var(--bg-color); color: var(--accent-color); }
     .calc-screen { background: #000; color: #fff; text-align: right; padding: 24px; font-size: 40px; border-radius: 12px; margin-bottom: 12px; min-height: 90px; word-break: break-all; }
     .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
@@ -70,6 +70,9 @@
         <option value="Life Science">Life Science</option>
         <option value="Math G6">Math G6</option>
         <option value="Pre-Algebra">Pre-Algebra</option>
+        <option value="Computer Science">Computer Science</option>
+        <option value="Study Hall">Study Hall</option>
+        <option value="Music / Art">Music / Art</option>
         <option value="PE / Health">PE / Health</option>
         <option value="Other">Other</option>
       </select>
@@ -90,9 +93,9 @@
       </thead>
       <tbody>
         <tr><td>Per 1</td><td>PE / Health</td><td>Life Science</td></tr>
-        <tr><td>Per 2</td><td>World History</td><td>Math G6</td></tr>
+        <tr><td>Per 2</td><td>World History</td><td>Music / Art</td></tr>
         <tr><td>Per 3</td><td>ELA</td><td>Pre-Algebra</td></tr>
-        <tr><td>Per 4</td><td>Elective</td><td>Support</td></tr>
+        <tr><td>Per 4</td><td>Computer Science</td><td>Study Hall / Math G6</td></tr>
       </tbody>
     </table>
   </div>
@@ -123,7 +126,6 @@
   </div>
 
   <script>
-    // 전역 변수로 데이터 배열 선언
     let homeworks = [];
 
     function switchTab(tabId) {
@@ -215,7 +217,6 @@
       }
     }
 
-    // 페이지 로드가 완전히 끝난 후 데이터를 불러오고 화면을 그립니다.
     window.onload = function() {
       const savedData = localStorage.getItem('my_homeworks');
       if (savedData) {
@@ -228,3 +229,4 @@
   </script>
 </body>
 </html>
+
